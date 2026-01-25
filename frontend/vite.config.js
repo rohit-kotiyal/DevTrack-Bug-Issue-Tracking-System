@@ -3,5 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "", // required for Render static hosting
+  base: "/",         
+  build: {
+    assetsDir: "assets",
+  },
 });
