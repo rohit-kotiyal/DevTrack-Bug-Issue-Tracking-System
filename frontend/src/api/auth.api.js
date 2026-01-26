@@ -1,17 +1,19 @@
-import axios from "axios";
-
-const API_URL = "http://127.0.0.1:8000/auth"; 
+import axios from "./axios";  
 
 export const registerUser = async (userData) => {
-  return axios.post(`${API_URL}/register`, userData);
+  return axios.post("/auth/register", userData);  
 };
 
 export const loginUser = async (credentials) => {
-  return axios.post(`${API_URL}/login`, credentials);
+  return axios.post("/auth/login", credentials); 
 };
 
 export const getCurrentUser = async (token) => {
-  return axios.get(`${API_URL}/me`, {
+  return axios.get("/auth/me", {  
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+
+export const login = loginUser;
+export const register = registerUser;
