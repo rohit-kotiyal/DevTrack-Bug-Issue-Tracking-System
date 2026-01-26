@@ -15,7 +15,8 @@ from fastapi.middleware.cors import CORSMiddleware
 # from api.core.models import django
 
 origins = [
-    "http://localhost:5173",  # Vite React dev server
+    "https://devtrack-bug-issue-tracking-system-react.onrender.com",
+    "http://localhost:5173",
 ]
 
 app = FastAPI(title="DevTrack API")
@@ -23,8 +24,9 @@ app = FastAPI(title="DevTrack API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",   # Vite frontend
+        "http://localhost:5173",  # Vite dev server
         "http://127.0.0.1:5173",
+        "https://devtrack-bug-issue-tracking-system-react.onrender.com",  # Production frontend
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -39,4 +41,5 @@ app.include_router(ticket_router)
 def health():
     return {
         "status": "DevTrack API"
+
     }
