@@ -6,6 +6,7 @@ export default function Navbar() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -20,23 +21,32 @@ export default function Navbar() {
       setCurrentUser(res.data);
     } catch (error) {
       console.error("Failed to load user:", error);
+      
+      // If token is invalid or expired (401), clear it and redirect to login
+      if (error.response?.status === 401) {
+        console.log("Token expired or invalid, logging out...");
+        localStorage.removeItem("token");
+        setCurrentUser(null);
+        navigate("/login");
+      }
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    setCurrentUser(null);
+    navigate("/");
   };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
+      <div className="max-w-350 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo & Main Nav */}
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition">
+          <div className="flex items-center space-x-4 sm:space-x-8">
+            <Link to="/" className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition">
               {/* DevTrack Logo SVG */}
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10">
                 <rect width="40" height="40" rx="8" fill="url(#gradient)"/>
                 <path d="M12 10h6c4.4 0 8 3.6 8 8s-3.6 8-8 8h-6V10z" fill="white"/>
                 <circle cx="24" cy="18" r="3" fill="white"/>
@@ -48,12 +58,12 @@ export default function Navbar() {
                   </linearGradient>
                 </defs>
               </svg>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-lg sm:text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 DevTrack
               </span>
             </Link>
 
-            {/* Main Navigation Links */}
+            {/* Desktop Navigation Links */}
             {token && (
               <nav className="hidden md:flex items-center space-x-2">
                 <Link
@@ -72,9 +82,9 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar - Hidden on mobile */}
           {token && (
-            <div className="hidden md:block flex-1 max-w-xl mx-8">
+            <div className="hidden lg:block flex-1 max-w-xl mx-8">
               <div className="relative">
                 <svg
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -93,36 +103,38 @@ export default function Navbar() {
           )}
 
           {/* Right Side - User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {token ? (
               <>
-                {/* Create Button */}
-                <button
-                  onClick={() => navigate('/projects')}
-                  className="hidden md:flex items-center space-x-2 bg-blue-600 text-white px-5 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition shadow-sm"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span>Create</span>
-                </button>
-
-                {/* Notifications Icon */}
-                <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-md transition relative">
+                {/* Notifications Icon - Hidden on mobile */}
+                <button className="hidden sm:block p-2 text-gray-500 cursor-pointer hover:bg-gray-100 rounded-md transition relative">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                   </svg>
-                  {/* Notification badge */}
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
 
-                {/* User Avatar & Dropdown */}
-                <div className="relative">
+                {/* Mobile Menu Button */}
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="md:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-md transition"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {showMobileMenu ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    )}
+                  </svg>
+                </button>
+
+                {/* User Avatar & Dropdown - Desktop */}
+                <div className="hidden md:block relative">
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
-                    className="flex items-center space-x-2 hover:bg-gray-100 px-2 py-2 rounded-md transition"
+                    className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 px-2 py-2 rounded-md transition"
                   >
-                    <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm ring-2 ring-white shadow-md">
+                    <div className="w-9 h-9 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm ring-2 ring-white shadow-md">
                       {currentUser?.name?.charAt(0).toUpperCase() || currentUser?.email?.charAt(0).toUpperCase() || 'U'}
                     </div>
                     <svg
@@ -134,17 +146,15 @@ export default function Navbar() {
                     </svg>
                   </button>
 
-                  {/* Dropdown */}
+                  {/* Desktop Dropdown */}
                   {showDropdown && (
                     <>
-                      {/* Backdrop */}
                       <div 
                         className="fixed inset-0 z-10"
                         onClick={() => setShowDropdown(false)}
                       />
                       
                       <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-20">
-                        {/* User Info */}
                         <div className="px-4 py-3 border-b border-gray-200">
                           <p className="text-sm font-semibold text-gray-900">
                             {currentUser?.name || 'User'}
@@ -154,7 +164,6 @@ export default function Navbar() {
                           </p>
                         </div>
 
-                        {/* Menu Items */}
                         <div className="py-1">
                           <Link
                             to="/projects"
@@ -179,11 +188,10 @@ export default function Navbar() {
                           </Link>
                         </div>
 
-                        {/* Logout */}
                         <div className="border-t border-gray-200 pt-1">
                           <button
                             onClick={handleLogout}
-                            className="flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition w-full text-left"
+                            className="flex items-center space-x-3 px-4 py-2 text-sm text-red-600 cursor-pointer hover:bg-red-50 transition w-full text-left"
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 32 32">
                               <path d="M3 0h22c0.553 0 1 0 1 0.553l-0 3.447h-2v-2h-20v28h20v-2h2l0 3.447c0 0.553-0.447 0.553-1 0.553h-22c-0.553 0-1-0.447-1-1v-30c0-0.553 0.447-1 1-1z" />
@@ -201,13 +209,13 @@ export default function Navbar() {
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-gray-700 hover:text-blue-600 transition px-4 py-2"
+                  className="text-sm font-medium text-gray-700 hover:text-blue-600 transition px-3 sm:px-4 py-2"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-blue-600 text-white px-5 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition shadow-sm"
+                  className="bg-blue-600 text-white px-3 sm:px-5 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition shadow-sm"
                 >
                   Sign Up
                 </Link>
@@ -215,6 +223,45 @@ export default function Navbar() {
             )}
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobileMenu && token && (
+          <div className="md:hidden border-t border-gray-200 py-4 space-y-2">
+            <Link
+              to="/dashboard"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/projects"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Projects
+            </Link>
+            <Link
+              to="/settings"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Settings
+            </Link>
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="px-4 py-2">
+                <p className="text-sm font-semibold text-gray-900">{currentUser?.name || 'User'}</p>
+                <p className="text-xs text-gray-500">{currentUser?.email}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-md transition"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
