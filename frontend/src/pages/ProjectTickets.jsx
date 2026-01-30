@@ -22,6 +22,7 @@ export default function ProjectTickets() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
+  const [refreshMembers, setRefreshMembers] = useState(0);
 
   const loadTickets = async () => {
     const res = await getProjectTickets(projectId, token);
@@ -46,10 +47,10 @@ export default function ProjectTickets() {
     }
   }, [projectId, token]);
 
-  // Calculate stats
+  // Calculate stats - using TODO instead of OPEN
   const stats = {
     total: tickets.length,
-    open: tickets.filter(t => t.status === 'OPEN').length,
+    open: tickets.filter(t => t.status === 'TODO').length,
     inProgress: tickets.filter(t => t.status === 'IN_PROGRESS').length,
     done: tickets.filter(t => t.status === 'DONE').length,
   };
@@ -118,7 +119,7 @@ export default function ProjectTickets() {
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{stats.open}</p>
-              <p className="text-sm text-gray-600">Open</p>
+              <p className="text-sm text-gray-600">To Do</p>
             </div>
           </div>
         </div>
@@ -192,7 +193,10 @@ export default function ProjectTickets() {
         {/* Sidebar - Project Info */}
         <div className="space-y-6">
           {/* Project Members */}
-          <ProjectMembersList projectId={projectId} />
+          <ProjectMembersList 
+            projectId={projectId} 
+            key={refreshMembers}
+          />
         </div>
       </div>
 
@@ -244,6 +248,7 @@ export default function ProjectTickets() {
                 projectId={projectId}
                 onAdded={() => {
                   loadProject();
+                  setRefreshMembers(prev => prev + 1);
                   setShowAddMember(false);
                 }}
               />
