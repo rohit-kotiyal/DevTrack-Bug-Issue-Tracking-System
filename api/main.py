@@ -11,12 +11,12 @@ from fastapi import FastAPI
 from api.users.routes import router as auth_router
 from api.projects.routes import router as project_router
 from api.tickets.routes import router as ticket_router
+from api.dashboard.routes import router as dashboard_router
+from api.comments.routes import router as comment_router
 from fastapi.middleware.cors import CORSMiddleware
-# from api.core.models import django
 
 origins = [
-    "https://devtrack-bug-issue-tracking-system-react.onrender.com",
-    "http://localhost:5173",
+    "http://localhost:5173",  # Vite React dev server
 ]
 
 app = FastAPI(title="DevTrack API")
@@ -24,9 +24,8 @@ app = FastAPI(title="DevTrack API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vite dev server
+        "http://localhost:5173",   # Vite frontend
         "http://127.0.0.1:5173",
-        "https://devtrack-bug-issue-tracking-system-react.onrender.com",  # Production frontend
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -36,10 +35,11 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(project_router)
 app.include_router(ticket_router)
+app.include_router(dashboard_router)
+app.include_router(comment_router)
 
 @app.get("/")
 def health():
     return {
         "status": "DevTrack API"
-
     }
