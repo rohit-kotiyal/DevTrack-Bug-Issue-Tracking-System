@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -84,16 +85,26 @@ WSGI_APPLICATION = 'devtrack.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
- 'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'devtrack_db',        # database name
-        'USER': 'devtrack_user',           # your pg username
-        'PASSWORD': 'Mickey@123',  # pg password
-        'HOST': 'localhost',          # or 127.0.0.1
-        'PORT': '5432',
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    DATABASES = {
+    'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'devtrack_db',        # database name
+            'USER': 'devtrack_user',           # your pg username
+            'PASSWORD': 'Mickey@123',  # pg password
+            'HOST': 'localhost',          # or 127.0.0.1
+            'PORT': '5432',
+        }
+    }
+
 AUTH_USER_MODEL = "users.user"
 
 # Password validation
