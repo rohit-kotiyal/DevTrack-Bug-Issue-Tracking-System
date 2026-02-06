@@ -21,12 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-id45h*k+shm2oa!$)*u-6wm_7@j!g9q%%#%%nyodpj1@ba%n31'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-id45h*k+shm2oa!$)*u-6wm_7@j!g9q%%#%%nyodpj1@ba%n31')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'devtrack-bug-issue-tracking-system.onrender.com',
+    '.onrender.com',  # Allow all Render subdomains
+]
 
 
 # Application definition
@@ -60,7 +65,14 @@ MIDDLEWARE = [
 
 MIDDLEWARE = ["corsheaders.middleware.CorsMiddleware"] + MIDDLEWARE
 
-CORS_ALLOW_ALL_ORIGINS = True  # or restrict to your frontend URL
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "https://devtrack-bug-issue-tracking-system-react.onrender.com",
+    "http://localhost:3000",  # for local development
+    "http://localhost:5173",  # if using Vite
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'devtrack.urls'
 
@@ -147,3 +159,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
