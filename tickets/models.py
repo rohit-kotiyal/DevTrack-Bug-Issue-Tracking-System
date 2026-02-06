@@ -37,7 +37,8 @@ class Ticket(models.Model):
         choices=STATUS,
         default="TODO"   # 🔧 FIXED (no spaces)
     )
-
+    order = models.IntegerField(default=0)
+    
     priority = models.CharField(
         max_length=20,
         choices=PRIORITY,
