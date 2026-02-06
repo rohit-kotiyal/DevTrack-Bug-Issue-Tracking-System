@@ -21,11 +21,14 @@ origins = [
 
 app = FastAPI(title="DevTrack API")
 
+app = FastAPI(title="DevTrack API")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",   # Vite frontend
-        "http://127.0.0.1:5173",
+        "https://devtrack-bug-issue-tracking-system-react.onrender.com",  # Production frontend
+        "http://localhost:5173",   # Vite frontend (local)
+        "http://127.0.0.1:5173",   # Vite frontend (local)
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -42,4 +45,5 @@ app.include_router(comment_router)
 def health():
     return {
         "status": "DevTrack API"
+
     }
