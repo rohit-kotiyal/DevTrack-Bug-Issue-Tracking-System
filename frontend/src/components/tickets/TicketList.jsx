@@ -49,7 +49,7 @@ export default function TicketList({ tickets, onUpdate, currentUserEmail }) {
                   disabled={!t.assigned_to_email || t.assigned_to_email !== currentUserEmail}
                   className="border rounded px-2 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
-                  <option value="OPEN">Open</option>
+                  <option value="TO DO">TO DO</option>
                   <option value="IN_PROGRESS">In Progress</option>
                   <option value="DONE">Done</option>
                 </select>

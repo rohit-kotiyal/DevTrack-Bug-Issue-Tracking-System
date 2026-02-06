@@ -83,7 +83,7 @@ export default function Navbar() {
           </div>
 
           {/* Search Bar - Hidden on mobile */}
-          {token && (
+          {/* {token && (
             <div className="hidden lg:block flex-1 max-w-xl mx-8">
               <div className="relative">
                 <svg
@@ -100,19 +100,19 @@ export default function Navbar() {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Right Side - User Menu */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {token ? (
               <>
-                {/* Notifications Icon - Hidden on mobile */}
+                {/* Notifications Icon - Hidden on mobile
                 <button className="hidden sm:block p-2 text-gray-500 cursor-pointer hover:bg-gray-100 rounded-md transition relative">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                   </svg>
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                </button> */}
 
                 {/* Mobile Menu Button */}
                 <button
